@@ -1,0 +1,118 @@
+/**
+ * Definition for singly-linked list. class ListNode { int val; ListNode next;
+ * ListNode(int x) { val = x; next = null; } }
+ */
+public class Solution {
+	public static void main(String[] args) {
+		Solution sol = new Solution();
+		sol.sortList(prepareCase());
+	}
+	
+	public static ListNode prepareCase() {
+		ListNode head = new ListNode(-84);
+		ListNode node = head;
+		String inputString = "142,41,-17,-71,170,186,183,-21,-76,76,10,29,81,112,-39,-6,-43,58,41,111,33,69,97,-38,82,-44,-7,99,135,42,150,149,-21,-30,164,153,92,180,-61,99,-81,147,109,34,98,14,178,105,5,43,46,40,-37,23,16,123,-53,34,192,-73,94,39,96,115,88,-31,-96,106,131,64,189,-91,-34,-56,-22,105,104,22,-31,-43,90,96,65,-85,184,85,90,118,152,-31,161,22,104,-85,160,120,-31,144,115";
+		for (String each: inputString.split(",")) {
+			node.next = new ListNode(Integer.parseInt(each));
+			node = node.next;
+		}
+		return head;
+	}
+	
+	public static void printList(ListNode head) {
+		ListNode node = head;
+		while (node != null) {
+			System.out.println(node.val);
+			node = node.next;
+		}
+	}
+
+	public ListNode sortList(ListNode head) {
+		if (head == null || head.next == null) {
+			return head;
+		}
+		// find the tail of the list
+		ListNode tail = head;
+		while (tail.next != null) {
+			tail = tail.next;
+		}
+		return sortList(head, tail);
+	}
+
+	private ListNode sortList(ListNode head, ListNode tail) {
+		if (head == tail) {
+			return head;
+		}
+		ListNode newHead = head, node = head;
+		while (node != tail) {
+			if (node.next.val < head.val) {
+				// move node.next to newHead
+				ListNode tmp = new ListNode(node.next.val);
+				tmp.next = newHead;
+				newHead = tmp;
+
+				// change node's next link
+				if (node.next == tail) {
+					// reach the tail, so we need to update the tail
+					tail = node;
+				}
+				node.next = node.next.next;
+			} else if (node.next.val == head.val) {
+				int val = node.next.val;
+
+				// change node's next link
+				if (node.next == tail) {
+					// reach the tail, so we need to update the tail
+					tail = node;
+				}
+				node.next = node.next.next;
+
+				// insert after head
+				ListNode tmp = new ListNode(val);
+				tmp.next = head.next;
+				head.next = tmp;
+
+				// move node if needed
+				if (node == head) {
+					node = node.next;
+				}
+			} else {
+				// nothing need change, move on
+				node = node.next;
+			}
+		}
+		// handle right part
+		if (head != tail) {
+			ListNode rightHead = head;
+			while (rightHead.next != null && rightHead.next.val == head.val
+					&& rightHead != tail) {
+				rightHead = rightHead.next;
+			}
+			if (rightHead.next != null && rightHead.next.next != null
+					&& rightHead.next != tail) {
+				rightHead.next = sortList(rightHead.next, tail);
+			}
+		}
+
+		// handle left part
+		if (newHead != head) {
+			ListNode leftTail = newHead;
+			while (leftTail.next != head) {
+				leftTail = leftTail.next;
+			}
+			newHead = sortList(newHead, leftTail);
+		}
+
+		return newHead;
+	}
+
+	static class ListNode {
+		int val;
+		ListNode next;
+
+		ListNode(int x) {
+			val = x;
+			next = null;
+		}
+	}
+}

@@ -1,0 +1,114 @@
+/*
+ * this solution used only one data structure (singly linked list)
+ * which requires O(n) get/set time
+ */
+public class SingleLinkedListSolution{
+    /*
+    we use a linked list as the cache storage.
+    whenever a node is accessed (get/set), the node will be moved to the head
+    if capacity reached, the node at the tail of the list is not least used one
+    which will be discarded.
+    */
+    private int capacity = 0;
+    private int size = 0;
+    private ListNode head = null;
+    
+    public SingleLinkedListSolution(int capacity) {
+        this.capacity = capacity;
+    }
+    
+    public int get(int key) {
+        // if nothing in the cache, return -1
+        if (size == 0) {
+            return -1;
+        }
+        // go through the list to check if the key exists
+        if (head.key == key) {
+            // it's right at the head! nothing need to be updated
+            return head.val;
+        }
+        ListNode p = head;
+        while (p.next != null) {
+            if (p.next.key == key) {
+                // we found the key! let's move it to head and return its value
+                ListNode tmp = new ListNode(p.next.key, p.next.val);
+                tmp.next = head;
+                head = tmp;
+                p.next = p.next.next;
+                return head.val;
+            }
+            // not found yet, move on
+            p = p.next;
+        }
+        // nout found such key
+        return -1;
+    }
+    
+    public void set(int key, int value) {
+        if (capacity == 0) {
+            // no space at all? we can't really do anything
+            return;
+        }
+        if (size == 0) {
+            // the list is not initialized yet
+            head = new ListNode(key, value);
+            size++; // insert a new node
+            return;
+        }
+        // go through the list to check if the key exists
+        if (head.key == key) {
+            // right at head, let's update it
+            head.val = value;
+            return;
+        }
+        ListNode p = head;
+        while (p.next != null) {
+            if (p.next.key == key) {
+                // we found the key, let's update it
+                p.next.val = value;
+                // and move it to the head
+                ListNode tmp = new ListNode(key, value);
+                tmp.next = head;
+                head = tmp;
+                return;
+            }
+            p = p.next;
+        }
+        // it seems we can't find the key
+        if (size == capacity) {
+            // already full! get rid of the tail!
+            if (capacity == 1) {
+                // oops, seems replace the head is the only way
+                head.key = key;
+                head.val = value;
+            } else {
+                p = head;
+                while (p.next.next != null) {
+                    p = p.next;
+                }
+                // get rid of the tail;
+                p.next = null;
+                // now let's insert the new value into head
+                ListNode tmp = new ListNode(key, value);
+                tmp.next = head;
+                head = tmp;
+            }
+        } else {
+            // more space left, insert it the head
+            ListNode tmp = new ListNode(key, value);
+            tmp.next = head;
+            head = tmp;
+            size++;
+        }
+    }
+    
+    protected static class ListNode {
+        public int key;
+        public int val;
+        public ListNode next;
+        public ListNode(int key, int val) {
+            this.key = key;
+            this.val = val;
+        }
+    }
+}
