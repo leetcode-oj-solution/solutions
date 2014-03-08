@@ -1,0 +1,127 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class Solution {
+	public static void main(String[] args) {
+		Solution solution = new Solution();
+		Point[] points = new Point[] {
+			new Point(0, -12),
+			new Point(5, 2),
+			new Point(2, 5),
+			new Point(0, -5),
+			new Point(1, 5),
+			new Point(2, -2),
+			new Point(5, -4),
+			new Point(3, 4),
+			new Point(-2, 4),
+			new Point(-1, 4),
+			new Point(0, -5),
+			new Point(0, -8),
+			new Point(-2, -1),
+			new Point(0, -11),
+			new Point(0, -9),
+		};
+		int r = solution.maxPoints(points);
+		System.out.println(r);
+	}
+	public int maxPoints(Point[] points) {
+		if (points.length <= 2) {
+			return points.length;
+		}
+		Map<Line, Set<Point>> map = new HashMap<Line, Set<Point>>();
+		for (int i = 0; i < points.length; i++) {
+			for (int j = i + 1; j < points.length; j++) {
+				Line l = new Line(points[i], points[j]);
+				Set<Point> set = null;
+				if (map.containsKey(l)) {
+					set = map.get(l);
+				} else {
+					set = new HashSet<Point>();
+					map.put(l, set);
+				}
+				set.add(points[i]);
+				set.add(points[j]);
+			}
+		}
+		// find the largest set
+		int max = 0;
+		for (Set<Point> set : map.values()) {
+			int size = set.size();
+			max = size > max ? size : max;
+		}
+		return max;
+	}
+
+	static class Line {
+		static final double threshold = 0.000000000001;
+		double k;
+		double b;
+		boolean isVertical = false;
+
+		public Line(Point p1, Point p2) {
+			double x1 = p1.x * 1.0;
+			double x2 = p2.x * 1.0;
+			double y1 = p1.y * 1.0;
+			double y2 = p2.y * 1.0;
+			if (x1 == x2) {
+				isVertical = true;
+				b = x1; 
+			}
+			k = (y1 - y2) / (x1 - x2);
+			b = (x1 * y2 - x2 * y1) / (x1 - x2);
+		}
+
+		@Override
+		public int hashCode() {
+			return (int) (k * 31.0 + b * 1.0);
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			if (other == null) {
+				return false;
+			}
+			if (this == other) {
+				return true;
+			}
+			if (!(other instanceof Line)) {
+				return false;
+			}
+			Line l = (Line) other;
+			if (Math.abs(this.k - l.k) > threshold) {
+				return false;
+			}
+			if (Math.abs(this.b - l.b) > threshold) {
+				return false;
+			}
+			return true;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("[k=%s b=%s]", k, b);
+		}
+	}
+
+	static class Point {
+		int x;
+		int y;
+
+		Point() {
+			x = 0;
+			y = 0;
+		}
+
+		public Point(int a, int b) {
+			x = a;
+			y = b;
+		}
+		
+		public String toString() {
+			return String.format("(%s, %s)", x, y);
+		}
+	}
+
+}

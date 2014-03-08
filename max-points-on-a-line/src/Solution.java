@@ -6,26 +6,16 @@ import java.util.Set;
 public class Solution {
 	public static void main(String[] args) {
 		Solution solution = new Solution();
-		Point[] points = new Point[] {
-			new Point(0, -12),
-			new Point(5, 2),
-			new Point(2, 5),
-			new Point(0, -5),
-			new Point(1, 5),
-			new Point(2, -2),
-			new Point(5, -4),
-			new Point(3, 4),
-			new Point(-2, 4),
-			new Point(-1, 4),
-			new Point(0, -5),
-			new Point(0, -8),
-			new Point(-2, -1),
-			new Point(0, -11),
-			new Point(0, -9),
-		};
+		Point[] points = new Point[] { new Point(0, -12), new Point(5, 2),
+				new Point(2, 5), new Point(0, -5), new Point(1, 5),
+				new Point(2, -2), new Point(5, -4), new Point(3, 4),
+				new Point(-2, 4), new Point(-1, 4), new Point(0, -5),
+				new Point(0, -8), new Point(-2, -1), new Point(0, -11),
+				new Point(0, -9), };
 		int r = solution.maxPoints(points);
 		System.out.println(r);
 	}
+
 	public int maxPoints(Point[] points) {
 		if (points.length <= 2) {
 			return points.length;
@@ -56,21 +46,32 @@ public class Solution {
 
 	static class Line {
 		static final double threshold = 0.000000000001;
-		final double k;
-		final double b;
+		double k;
+		double b;
+		boolean isVertical = false;
 
 		public Line(Point p1, Point p2) {
 			double x1 = p1.x * 1.0;
 			double x2 = p2.x * 1.0;
 			double y1 = p1.y * 1.0;
 			double y2 = p2.y * 1.0;
+			if (x1 == x2) {
+				isVertical = true;
+				k = 0;
+				b = x1;
+				return;
+			}
 			k = (y1 - y2) / (x1 - x2);
 			b = (x1 * y2 - x2 * y1) / (x1 - x2);
 		}
 
 		@Override
 		public int hashCode() {
-			return (int) (k * 31.0 + b * 1.0);
+			if (isVertical) {
+				return (int) b;
+			} else {
+				return (int) (k * 31.0 + b * 1.0);
+			}
 		}
 
 		@Override
@@ -85,15 +86,21 @@ public class Solution {
 				return false;
 			}
 			Line l = (Line) other;
-			if (Math.abs(this.k - l.k) > threshold) {
+			if (this.isVertical && l.isVertical) {
+				return this.b == l.b;
+			} else if (this.isVertical || l.isVertical) {
 				return false;
+			} else {
+				if (Math.abs(this.k - l.k) > threshold) {
+					return false;
+				}
+				if (Math.abs(this.b - l.b) > threshold) {
+					return false;
+				}
+				return true;
 			}
-			if (Math.abs(this.b - l.b) > threshold) {
-				return false;
-			}
-			return true;
 		}
-		
+
 		@Override
 		public String toString() {
 			return String.format("[k=%s b=%s]", k, b);
@@ -113,7 +120,7 @@ public class Solution {
 			x = a;
 			y = b;
 		}
-		
+
 		public String toString() {
 			return String.format("(%s, %s)", x, y);
 		}

@@ -1,0 +1,30 @@
+import java.util.ArrayList;
+import java.util.Stack;
+
+public class Solution {
+	public ArrayList<Integer> preorderTraversal(TreeNode root) {
+		Stack<TreeNode> stack = new Stack<TreeNode>();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		TreeNode p = root;
+		while (p != null || !stack.isEmpty()) {
+			if (p != null) {
+				list.add(p.val);
+				stack.push(p);
+				p = p.left;
+			} else {
+				p = stack.pop().right;
+			}
+		}
+		return list;
+	}
+
+	public class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+
+		TreeNode(int x) {
+			val = x;
+		}
+	}
+}
