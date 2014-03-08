@@ -328,3 +328,43 @@ java.io.IOException: Unable to resolve plug-in "platform:/plugin/com.smartbear.c
 
 !ENTRY org.eclipse.wst.common.project.facet.core 4 0 2014-03-06 10:11:34.670
 !MESSAGE Project facet jst.ejb has not been defined. It is used in plugin org.eclipse.jst.j2ee.
+!SESSION 2014-03-07 21:02:46.291 -----------------------------------------------
+eclipse.buildId=4.3.0.M20130911-1000
+java.version=1.7.0_21
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -keyring /Users/jianan.lu/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/jianan.lu/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-03-07 21:02:54.047
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY com.perforce.team.core 2 0 2014-03-07 21:02:57.783
+!MESSAGE unable to get manifest version attribute: Not running from jar file: bundleresource://238.fwk217875110:1/com/perforce/p4java/Metadata.class
+
+!ENTRY com.perforce.team.core 2 0 2014-03-07 21:02:57.788
+!MESSAGE unable to get manifest date attribute: Not running from jar file: bundleresource://238.fwk217875110:1/com/perforce/p4java/Metadata.class
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.791
+!MESSAGE P4Java server factory loaded; version: Internal 2010.1 Perforce Development; date: unknown
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.796
+!MESSAGE Using default charset: US-ASCII; JVM charset: US-ASCII
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.801
+!MESSAGE Checking this Java for symbolic link support...
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.809
+!MESSAGE It seems this Java supports symbolic links.
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.813
+!MESSAGE Symbolic link support at the OS level will be determined at runtime...
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.819
+!MESSAGE initializing system file command helper class: java.io.File
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.823
+!MESSAGE Using default RPC system file command helper: com.perforce.p4java.impl.mapbased.rpc.sys.helper.RpcSystemFileCommandsHelper
+
+!ENTRY com.perforce.team.core 1 0 2014-03-07 21:02:57.828
+!MESSAGE setting RPC system file helper to class com.perforce.team.core.p4java.P4JavaSysFileCommandsHelper

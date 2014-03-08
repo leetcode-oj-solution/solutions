@@ -1,6 +1,231 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * this method will use two data structures to improve the speed
  */
 public class HashMapAndDoubleLinkedListSolution {
+	
+	public String toString() {
+		String s = map + " head: " + head + " tail: " + tail + " [";
+		Node n = head;
+		while (n != null) {
+			s += n + "->";
+			n = n.next;
+		}
+		return s + "]"; 
+	}
+	
+	public static void main(String[] args) {
+		HashMapAndDoubleLinkedListSolution sol = new HashMapAndDoubleLinkedListSolution(10);
+		sol.set(10,13);
+		sol.set(3,17);
+		sol.set(6,11);
+		sol.set(10,5);
+		sol.set(9,10);
+		sol.get(13);
+		sol.set(2,19);
+		sol.get(2);
+		sol.get(3);
+		sol.set(5,25);
+		sol.get(8);
+		sol.set(9,22);
+		sol.set(5,5);
+		sol.set(1,30);
+		sol.get(11);
+		sol.set(9,12);
+		sol.get(7);
+		sol.get(5);
+		sol.get(8);
+		sol.get(9);
+		sol.set(4,30);
+		sol.set(9,3);
+		sol.get(9);
+		sol.get(10);
+		sol.get(10);
+		sol.set(6,14);
+		sol.set(3,1);
+		sol.get(3);
+		sol.set(10,11);
+		sol.get(8);
+		sol.set(2,14);
+		sol.get(1);
+		sol.get(5);
+		sol.get(4);
+		sol.set(11,4);
+		sol.set(12,24);
+		sol.set(5,18);
+		sol.get(13);
+		sol.set(7,23);
+		sol.get(8);
+		sol.get(12);
+		sol.set(3,27);
+		sol.set(2,12);
+		sol.get(5);
+		sol.set(2,9);
+		sol.set(13,4);
+		sol.set(8,18);
+		sol.set(1,7);
+		sol.get(6);
+		sol.set(9,29);
+		sol.set(8,21);
+		sol.get(5);
+		sol.set(6,30);
+		sol.set(1,12);
+		sol.get(10);
+		sol.set(4,15);
+		sol.set(7,22);
+		sol.set(11,26);
+		sol.set(8,17);
+		sol.set(9,29);
+		sol.get(5);
+		sol.set(3,4);
+		sol.set(11,30);
+		sol.get(12);
+		sol.set(4,29);
+		sol.get(3);
+		sol.get(9);
+		sol.get(6);
+		sol.set(3,4);
+		sol.get(1);
+		sol.get(10);
+		sol.set(3,29);
+		sol.set(10,28);
+		sol.set(1,20);
+		sol.set(11,13);
+		sol.get(3);
+		sol.set(3,12);
+		sol.set(3,8);
+		sol.set(10,9);
+		sol.set(3,26);
+		sol.get(8);
+		sol.get(7);
+		sol.get(5);
+		sol.set(13,17);
+		sol.set(2,27);
+		sol.set(11,15);
+		sol.get(12);
+		sol.set(9,19);
+		sol.set(2,15);
+		sol.set(3,16);
+		sol.get(1);
+		sol.set(12,17);
+		sol.set(9,1);
+		sol.set(6,19);
+		sol.get(4);
+		sol.get(5);
+		sol.get(5);
+		sol.set(8,1);
+		sol.set(11,7);
+		sol.set(5,2);
+		sol.set(9,28);
+		sol.get(1);
+		sol.set(2,2);
+		sol.set(7,4);
+		sol.set(4,22);
+		sol.set(7,24);
+		sol.set(9,26);
+		sol.set(13,28);
+		sol.set(11,26);
+	}
 
+	private Node head;
+	private Node tail;
+	private int capacity;
+	private Map<Integer, Node> map = new HashMap<Integer, Node>();
+
+	public HashMapAndDoubleLinkedListSolution(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public int get(int key) {
+		if (map.containsKey(key)) {
+			if (map.size() == 1) {
+				// if there is only 1 element, just return it
+				return map.get(key).value;
+			}
+			// we have the key, update the list
+			Node node = map.get(key);
+			if (node != head) {
+				// if it's head, we don't really need to move anything
+				if (node == tail) {
+					// if it's tail, move tail
+					tail = tail.prev;
+					tail.next = null;
+				} else {
+					// it's in the middle, let's update the before/after links
+					node.prev.next = node.next;
+					node.next.prev = node.prev;
+				}
+				// move the node to head
+				head = insertBeforeHead(head, node);
+			}
+			return head.value;
+		} else {
+			// not found the key, return -1
+			return -1;
+		}
+	}
+
+	public void set(int key, int value) {
+		if (capacity == 0) {
+			return; // no space allowance
+		}
+		if (map.isEmpty()) {
+			// the list is not yet initialized
+			Node node = new Node(key, value);
+			map.put(key, node);
+			head = node;
+			tail = node;
+			return;
+		}
+		if (capacity == 1) {
+			// if there is only one spot
+			map.clear();
+			map.put(key, head);
+			head.value = value;
+			return;
+		}
+		// let's first try to "get" it
+		if (get(key) != -1) {
+			// we found this key and update it's node to head, now only need to
+			// update the value
+			head.value = value;
+			map.put(key, head);
+		} else {
+			// we don't have the key yet, need to figure a way to insert it
+			if (map.size() == capacity) {
+				// reach the capacity, get rid of the eldest node
+				map.remove(tail.key);
+				tail.prev.next = null;
+				tail = tail.prev;
+			}
+			// put the new node at the head
+			head = insertBeforeHead(head, new Node(key, value));
+			map.put(key, head);
+		}
+	}
+	
+	private Node insertBeforeHead(Node head, Node node) {
+		head.prev = node;
+		node.prev = null;
+		node.next = head;
+		return node;
+	}
+
+	public static class Node {
+		public int key;
+		public int value;
+		public Node prev;
+		public Node next;
+
+		public Node(int key, int value) {
+			this.key = key;
+			this.value = value;
+		}
+		
+		public String toString() {
+			return String.format("(%s,%s)", Integer.toString(key), Integer.toString(value));
+		}
+	}
 }

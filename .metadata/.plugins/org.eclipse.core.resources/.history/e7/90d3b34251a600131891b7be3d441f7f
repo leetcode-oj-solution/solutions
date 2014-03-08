@@ -1,0 +1,87 @@
+import java.util.HashMap;
+import java.util.Map;
+
+/*
+ * this method will use two data structures to improve the speed
+ */
+public class HashMapAndDoubleLinkedListSolution {
+
+	private Node head;
+	private Node tail;
+	private int capacity;
+	private Map<Integer, Node> map = new HashMap<Integer, Node>();
+
+	public HashMapAndDoubleLinkedListSolution(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public int get(int key) {
+		if (map.containsKey(key)) {
+			// we have the key, update the list
+			Node node = map.get(key);
+			if (node == tail) {
+				// if it's tail, move tail
+				tail = node.prev;
+				tail.next = null;
+			} else {
+				node.prev.next = node.next;
+				node.next.prev = node.prev;
+			}
+			// move the node to head
+			node.prev = null;
+			node.next = head;
+			head.prev = node;
+			head = node;
+			return head.value;
+		} else {
+			// not found the key, return -1
+			return -1;
+		}
+	}
+
+	public void set(int key, int value) {
+		if (capacity == 0) {
+			return; // no space allowance
+		}
+		if (map.isEmpty()) {
+			// the list is not yet initialized
+			Node node = new Node(value);
+			map.put(key, node);
+			head = node;
+			tail = node;
+			return;
+		}
+		// let's first try to "get" it
+		if (get(key) != -1) {
+			// we found this key and update it's node to head, now only need to
+			// update the value
+			head.value = value;
+			map.put(key, head);
+		} else {
+			// we don't have the key yet, need to figure a way to insert it
+			if (map.size() == capacity) {
+				// reach the capacity, get rid of the eldest node
+				tail.prev.next = null;
+				tail = tail.prev;
+				map.remove(key);
+			}
+			// put the new node at the head
+			Node tmp = new Node(value);
+			tmp.next = head;
+			tmp.prev = null;
+			head.prev = tmp;
+			head = tmp;
+			map.put(key, head);
+		}
+	}
+
+	public static class Node {
+		public int value;
+		public Node prev;
+		public Node next;
+
+		public Node(int value) {
+			this.value = value;
+		}
+	}
+}
