@@ -1,0 +1,61 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+/*
+ * A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+
+ Return a deep copy of the list.
+
+
+ */
+/**
+ * Definition for singly-linked list with a random pointer. class RandomListNode
+ * { int label; RandomListNode next, random; RandomListNode(int x) { this.label
+ * = x; } };
+ */
+public class Solution {
+	class RandomListNode {
+		int label;
+		RandomListNode next, random;
+
+		RandomListNode(int x) {
+			this.label = x;
+		}
+	};
+
+	public RandomListNode copyRandomList(RandomListNode head) {
+		if (head == null) {
+			return null;
+		}
+		// first copy the head
+		Map<RandomListNode, RandomListNode> map = new HashMap<RandomListNode, RandomListNode>();
+		RandomListNode newHead = new RandomListNode(head.label);
+		map.put(head, newHead);
+		// 2 pointers for us to clone the list
+		RandomListNode p1 = head;
+		RandomListNode p2 = newHead;
+		
+		// first round, let's copy the next pointers only
+		// make not reach the end of the list yet, and not met a cycle point
+		while (p1.next != null && !map.containsKey(p1.next)) {
+			RandomListNode tmp = new RandomListNode(p1.next.label);
+			map.put(p1.next, tmp);
+			p2.next = tmp;
+			p2.random = p1.random;
+			p1 = p1.next;
+			p2 = p2.next;
+		}
+		p2.random = p1.random;
+		// the second round, let's restore the random link
+		p2 = newHead;
+		Set<RandomListNode> visited = new HashSet<RandomListNode>();
+		while (p2 != null && !visited.contains(p2)) {
+			p2.random = map.get(p2.random);
+			visited.add(p2);
+			p2 = p2.next;
+		}
+		return newHead;
+	}
+}

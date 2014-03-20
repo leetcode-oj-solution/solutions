@@ -1,0 +1,66 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+/*
+ * Given a string s and a dictionary of words dict, add spaces in s to construct a sentence where each word is a valid dictionary word.
+
+ Return all such possible sentences.
+
+ For example, given
+ s = "catsanddog",
+ dict = ["cat", "cats", "and", "sand", "dog"].
+
+ A solution is ["cats and dog", "cat sand dog"].
+ */
+public class Solution {
+	public ArrayList<String> wordBreak(String s, Set<String> dict) {
+		if (s.isEmpty() || dict.isEmpty()) {
+			return new ArrayList<String>();
+		}
+		Queue<List<Integer>> q = new LinkedList<List<Integer>>();
+		Queue<List<Integer>> readyQ = new LinkedList<List<Integer>>();
+		List<Integer> initList = new ArrayList<Integer>();
+		initList.add(0);
+		q.offer(initList);
+		while (!q.isEmpty()) {
+			ArrayList<Integer> list = (ArrayList<Integer>) q.poll();
+			int start = list.get(list.size() - 1); // get the last index
+			if (start == s.length()) {
+				// it's a whole sentence
+				readyQ.add(list);
+				continue;
+			}
+			for (String word : dict) {
+				int end = start + word.length();
+				if (end > s.length()) {
+					continue;
+				}
+				if (s.substring(start, end).equals(word)) {
+					list.add(end);
+					q.offer(list);
+				}
+			}
+		}
+		// build the sentences
+		ArrayList<String> sentences = new ArrayList<String>();
+		while (!readyQ.isEmpty()) {
+			ArrayList<Integer> list = (ArrayList<Integer>) readyQ.poll();
+			if (list.size() == 1) {
+				sentences.add(s);
+			} else {
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < list.size() - 1; i++) {
+					builder.append(s.substring(list.get(i), list.get(i + 1)));
+					builder.append(" ");
+				}
+				sentences.add(builder.toString());
+			}
+		}
+		return sentences;
+	}
+}
